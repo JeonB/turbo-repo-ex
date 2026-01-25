@@ -12,6 +12,7 @@
     "./*": "./dist/*.js"
   },
   "scripts": {
+    "build": "pnpm run build:styles && pnpm run build:components",
     "build:styles": "tailwindcss -i ./src/styles.css -o ./dist/index.css",
     "build:components": "tsc",
     "check-types": "tsc --noEmit",

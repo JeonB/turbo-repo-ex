@@ -34,6 +34,7 @@ const config: StorybookConfig = {
         alias: {
           ...config.resolve?.alias,
           '@repo/ui/card': path.resolve(__dirname, '../../../packages/ui/src/card.tsx'),
+          '@repo/ui/badge': path.resolve(__dirname, '../../../packages/ui/src/badge.tsx'),
           '@repo/ui/gradient': path.resolve(__dirname, '../../../packages/ui/src/gradient.tsx'),
           '@repo/ui/turborepo-logo': path.resolve(
             __dirname,

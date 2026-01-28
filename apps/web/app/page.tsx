@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { Avatar } from "@repo/ui/avatar";
 import { Badge } from "@repo/ui/badge";
 import { Card } from "@repo/ui/card";
 import { Gradient } from "@repo/ui/gradient";
@@ -36,6 +37,15 @@ export default function Page() {
           examples/with-tailwind -&nbsp;
           <code className="font-mono font-bold">web</code>
           <Badge variant="success">@repo/ui</Badge>
+          <span className="flex items-center gap-2">
+            <Avatar fallback="W" size="sm" />
+            <Avatar fallback="AB" size="md" />
+            <Avatar
+              src="https://github.com/vercel.png"
+              alt="Vercel"
+              size="sm"
+            />
+          </span>
         </p>
         <div className="fixed bottom-0 left-0 flex items-end justify-center w-full h-48 lg:static lg:h-auto lg:w-auto">
           <a

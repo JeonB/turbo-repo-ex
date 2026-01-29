@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import { Avatar } from "@repo/ui/avatar";
 import { Card } from "@repo/ui/card";
 import { Gradient } from "@repo/ui/gradient";
@@ -35,6 +36,12 @@ export default function Page() {
         <p className="fixed top-0 left-0 flex justify-center w-full px-4 pt-8 pb-6 border backdrop-blur-2xl border-neutral-800 from-inherit lg:static lg:w-auto lg:rounded-xl lg:p-4 items-center gap-2">
           examples/with-tailwind -&nbsp;
           <code className="font-mono font-bold">docs</code>
+          <Link
+            href="/components"
+            className="underline hover:no-underline text-blue-400"
+          >
+            Components
+          </Link>
           <span className="flex items-center gap-2">
             <Avatar fallback="D" size="sm" />
             <Avatar fallback="JD" size="md" />

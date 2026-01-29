@@ -1,6 +1,8 @@
 import Image from "next/image";
+import { Alert } from "@repo/ui/alert";
 import { Avatar } from "@repo/ui/avatar";
 import { Badge } from "@repo/ui/badge";
+import { Button } from "@repo/ui/button";
 import { Card } from "@repo/ui/card";
 import { Gradient } from "@repo/ui/gradient";
 import { TurborepoLogo } from "@repo/ui/turborepo-logo";
@@ -115,6 +117,64 @@ export default function Page() {
           </div>
         </div>
       </div>
+
+      <section className="w-full max-w-5xl mb-32 px-6">
+        <h2 className="text-2xl font-bold mb-2">Design System Showcase</h2>
+        <p className="text-neutral-400 text-sm mb-8">
+          Shared @repo/ui components used across web and docs.
+        </p>
+        <div className="flex flex-wrap gap-8 items-start">
+          <div>
+            <h3 className="text-sm font-semibold mb-2">Button</h3>
+            <div className="flex gap-2">
+              <Button variant="default">Default</Button>
+              <Button variant="primary">Primary</Button>
+              <Button variant="danger">Danger</Button>
+            </div>
+          </div>
+          <div>
+            <h3 className="text-sm font-semibold mb-2">Badge</h3>
+            <div className="flex gap-2 flex-wrap">
+              <Badge variant="default">Default</Badge>
+              <Badge variant="success">Success</Badge>
+              <Badge variant="warning">Warning</Badge>
+              <Badge variant="danger">Danger</Badge>
+            </div>
+          </div>
+          <div>
+            <h3 className="text-sm font-semibold mb-2">Avatar</h3>
+            <div className="flex gap-2 items-center">
+              <Avatar fallback="S" size="sm" />
+              <Avatar fallback="M" size="md" />
+              <Avatar fallback="L" size="lg" />
+              <Avatar
+                src="https://github.com/vercel.png"
+                alt="Vercel"
+                size="md"
+              />
+            </div>
+          </div>
+          <div className="min-w-[200px]">
+            <h3 className="text-sm font-semibold mb-2">Card</h3>
+            <Card href="https://turborepo.com/docs" title="Docs">
+              Example card from @repo/ui
+            </Card>
+          </div>
+          <div className="w-full max-w-md">
+            <h3 className="text-sm font-semibold mb-2">Alert</h3>
+            <div className="space-y-2">
+              <Alert variant="info" title="Info">
+                Informational message
+              </Alert>
+              <Alert variant="success">Changes saved.</Alert>
+              <Alert variant="warning" title="Warning">
+                Please review.
+              </Alert>
+              <Alert variant="error">Something went wrong.</Alert>
+            </div>
+          </div>
+        </div>
+      </section>
 
       <div className="grid mb-32 text-center lg:max-w-5xl lg:w-full lg:mb-0 lg:grid-cols-4 lg:text-left">
         {LINKS.map(({ title, href, description }) => (

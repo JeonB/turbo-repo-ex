@@ -1,7 +1,10 @@
-import type { StorybookConfig } from '@storybook/react-vite';
-import tailwindcss from '@tailwindcss/vite';
-import path, { dirname } from 'path';
-import { fileURLToPath } from 'url';
+// This file has been automatically migrated to valid ESM format by Storybook.
+import type { StorybookConfig } from "@storybook/react-vite";
+import tailwindcss from "@tailwindcss/vite";
+import path, { dirname } from "path";
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -15,16 +18,16 @@ function getAbsolutePath(value: string) {
 
 const config: StorybookConfig = {
   stories: [
-    '../stories/**/*.mdx',
-    '../stories/**/*.stories.@(js|jsx|mjs|ts|tsx)',
+    "../stories/**/*.mdx",
+    "../stories/**/*.stories.@(js|jsx|mjs|ts|tsx)",
   ],
   addons: [
-    getAbsolutePath('@chromatic-com/storybook'),
-    getAbsolutePath('@storybook/addon-vitest'),
-    getAbsolutePath('@storybook/addon-a11y'),
-    getAbsolutePath('@storybook/addon-docs'),
+    getAbsolutePath("@chromatic-com/storybook"),
+    getAbsolutePath("@storybook/addon-vitest"),
+    getAbsolutePath("@storybook/addon-a11y"),
+    getAbsolutePath("@storybook/addon-docs"),
   ],
-  framework: getAbsolutePath('@storybook/react-vite'),
+  framework: getAbsolutePath("@storybook/react-vite"),
   async viteFinal(config) {
     return {
       ...config,
@@ -33,12 +36,29 @@ const config: StorybookConfig = {
         ...config.resolve,
         alias: {
           ...config.resolve?.alias,
-          '@repo/ui/card': path.resolve(__dirname, '../../../packages/ui/src/card.tsx'),
-          '@repo/ui/badge': path.resolve(__dirname, '../../../packages/ui/src/badge.tsx'),
-          '@repo/ui/gradient': path.resolve(__dirname, '../../../packages/ui/src/gradient.tsx'),
-          '@repo/ui/turborepo-logo': path.resolve(
+          "@repo/ui/card": path.resolve(
             __dirname,
-            '../../../packages/ui/src/turborepo-logo.tsx'
+            "../../../packages/ui/src/card.tsx",
+          ),
+          "@repo/ui/badge": path.resolve(
+            __dirname,
+            "../../../packages/ui/src/badge.tsx",
+          ),
+          "@repo/ui/gradient": path.resolve(
+            __dirname,
+            "../../../packages/ui/src/gradient.tsx",
+          ),
+          "@repo/ui/button": path.resolve(
+            __dirname,
+            "../../../packages/ui/src/button.tsx",
+          ),
+          "@repo/ui/alert": path.resolve(
+            __dirname,
+            "../../../packages/ui/src/alert.tsx",
+          ),
+          "@repo/ui/turborepo-logo": path.resolve(
+            __dirname,
+            "../../../packages/ui/src/turborepo-logo.tsx",
           ),
         },
       },

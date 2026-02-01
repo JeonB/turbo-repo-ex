@@ -38,27 +38,31 @@ const config: StorybookConfig = {
           ...config.resolve?.alias,
           "@repo/ui/card": path.resolve(
             __dirname,
-            "../../../packages/ui/src/card.tsx",
+            "../../../packages/ui/src/card.tsx"
           ),
           "@repo/ui/badge": path.resolve(
             __dirname,
-            "../../../packages/ui/src/badge.tsx",
+            "../../../packages/ui/src/badge.tsx"
           ),
           "@repo/ui/gradient": path.resolve(
             __dirname,
-            "../../../packages/ui/src/gradient.tsx",
+            "../../../packages/ui/src/gradient.tsx"
           ),
           "@repo/ui/button": path.resolve(
             __dirname,
-            "../../../packages/ui/src/button.tsx",
+            "../../../packages/ui/src/button.tsx"
           ),
           "@repo/ui/alert": path.resolve(
             __dirname,
-            "../../../packages/ui/src/alert.tsx",
+            "../../../packages/ui/src/alert.tsx"
+          ),
+          "@repo/ui/avatar": path.resolve(
+            __dirname,
+            "../../../packages/ui/src/avatar.tsx"
           ),
           "@repo/ui/turborepo-logo": path.resolve(
             __dirname,
-            "../../../packages/ui/src/turborepo-logo.tsx",
+            "../../../packages/ui/src/turborepo-logo.tsx"
           ),
         },
       },

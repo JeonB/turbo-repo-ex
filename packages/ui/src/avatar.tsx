@@ -17,22 +17,25 @@ export function Avatar({
   alt = "",
   fallback,
   size = "md",
+  className,
 }: {
   src?: string;
   alt?: string;
   fallback?: string;
   size?: AvatarSize;
+  className?: string;
 }) {
   const sizeClasses = getSizeClasses(size);
   const baseClasses =
     "ui:inline-flex ui:items-center ui:justify-center ui:rounded-full ui:font-semibold ui:bg-neutral-700 ui:text-white ui:overflow-hidden ui:flex-shrink-0";
+  const combined = className ? `${baseClasses} ${sizeClasses} ${className}` : `${baseClasses} ${sizeClasses}`;
 
   if (src) {
     return (
       <img
         src={src}
         alt={alt}
-        className={`ui:object-cover ui:rounded-full ${sizeClasses} ${baseClasses}`}
+        className={`ui:object-cover ui:rounded-full ${combined}`}
         referrerPolicy="no-referrer"
       />
     );
@@ -40,7 +43,7 @@ export function Avatar({
 
   return (
     <span
-      className={`${baseClasses} ${sizeClasses}`}
+      className={combined}
       role="img"
       aria-label={alt || fallback || "Avatar"}
     >

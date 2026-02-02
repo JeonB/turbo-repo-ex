@@ -9,7 +9,11 @@ export default function DocsLayout({
     <div className="flex min-h-screen">
       <DocsSidebar />
       <div className="flex-1 overflow-auto">
-        <article className="mx-auto max-w-3xl px-6 py-10 lg:px-8">
+        <article
+          id="main-content"
+          className="mx-auto max-w-3xl px-6 py-10 lg:px-8"
+          tabIndex={-1}
+        >
           {children}
         </article>
       </div>

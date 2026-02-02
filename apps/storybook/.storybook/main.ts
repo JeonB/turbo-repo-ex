@@ -1,19 +1,30 @@
 // This file has been automatically migrated to valid ESM format by Storybook.
 import type { StorybookConfig } from "@storybook/react-vite";
 import tailwindcss from "@tailwindcss/vite";
-import path, { dirname } from "path";
-import { fileURLToPath } from "url";
+import fs from "node:fs";
+import path, { dirname } from "node:path";
+import { fileURLToPath } from "node:url";
 
-const __filename = fileURLToPath(import.meta.url);
-
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 /**
- * This function is used to resolve the absolute path of a package.
- * It is needed in projects that use Yarn PnP or are set up within a monorepo.
+ * Resolve the absolute path of a package (for addons/framework).
  */
 function getAbsolutePath(value: string) {
   return dirname(fileURLToPath(import.meta.resolve(`${value}/package.json`)));
+}
+
+/** Build @repo/ui/* aliases from packages/ui/src/*.tsx so new components are picked up automatically. */
+function getRepoUiAliases(): Record<string, string> {
+  const uiSrc = path.resolve(__dirname, "../../../packages/ui/src");
+  const entries: Record<string, string> = {};
+  if (!fs.existsSync(uiSrc)) return entries;
+  for (const name of fs.readdirSync(uiSrc)) {
+    if (!name.endsWith(".tsx")) continue;
+    const key = `@repo/ui/${name.replace(/\.tsx$/, "")}`;
+    entries[key] = path.resolve(uiSrc, name);
+  }
+  return entries;
 }
 
 const config: StorybookConfig = {
@@ -36,34 +47,7 @@ const config: StorybookConfig = {
         ...config.resolve,
         alias: {
           ...config.resolve?.alias,
-          "@repo/ui/card": path.resolve(
-            __dirname,
-            "../../../packages/ui/src/card.tsx"
-          ),
-          "@repo/ui/badge": path.resolve(
-            __dirname,
-            "../../../packages/ui/src/badge.tsx"
-          ),
-          "@repo/ui/gradient": path.resolve(
-            __dirname,
-            "../../../packages/ui/src/gradient.tsx"
-          ),
-          "@repo/ui/button": path.resolve(
-            __dirname,
-            "../../../packages/ui/src/button.tsx"
-          ),
-          "@repo/ui/alert": path.resolve(
-            __dirname,
-            "../../../packages/ui/src/alert.tsx"
-          ),
-          "@repo/ui/avatar": path.resolve(
-            __dirname,
-            "../../../packages/ui/src/avatar.tsx"
-          ),
-          "@repo/ui/turborepo-logo": path.resolve(
-            __dirname,
-            "../../../packages/ui/src/turborepo-logo.tsx"
-          ),
+          ...getRepoUiAliases(),
         },
       },
     };

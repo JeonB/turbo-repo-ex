@@ -22,13 +22,19 @@ export function Alert({
   children,
   title,
   variant = "info",
+  className,
 }: {
   children: ReactNode;
   title?: string;
   variant?: AlertVariant;
+  className?: string;
 }) {
+  const base = getAlertClasses(variant);
   return (
-    <div className={getAlertClasses(variant)} role="alert">
+    <div
+      className={className ? `${base} ${className}` : base}
+      role="alert"
+    >
       {title ? <p className="ui:mb-1 ui:font-semibold">{title}</p> : null}
       <div>{children}</div>
     </div>

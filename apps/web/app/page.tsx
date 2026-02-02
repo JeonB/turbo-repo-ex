@@ -37,9 +37,9 @@ export default function Page() {
           conic
         />
         <div className="relative z-10 mx-auto max-w-3xl text-center">
-          <div className="mb-4">
-            <Badge variant="success">@repo/ui</Badge>
-          </div>
+          <Badge variant="success" className="mb-4">
+            @repo/ui
+          </Badge>
           <h1 className="text-4xl font-bold tracking-tight text-white sm:text-5xl">
             Build with a shared design system
           </h1>

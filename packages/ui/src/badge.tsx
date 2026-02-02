@@ -21,9 +21,16 @@ function getBadgeClasses(variant: BadgeVariant): string {
 export function Badge({
   children,
   variant = "default",
+  className,
 }: {
   children: ReactNode;
   variant?: BadgeVariant;
+  className?: string;
 }) {
-  return <span className={getBadgeClasses(variant)}>{children}</span>;
+  const base = getBadgeClasses(variant);
+  return (
+    <span className={className ? `${base} ${className}` : base}>
+      {children}
+    </span>
+  );
 }

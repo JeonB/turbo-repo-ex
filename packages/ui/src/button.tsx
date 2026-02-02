@@ -25,17 +25,20 @@ export function Button({
   variant = "default",
   disabled = false,
   type = "button",
+  className,
 }: {
   children: ReactNode;
   variant?: ButtonVariant;
   disabled?: boolean;
   type?: "button" | "submit" | "reset";
+  className?: string;
 }) {
+  const base = getButtonClasses(variant, disabled);
   return (
     <button
       type={type}
       disabled={disabled}
-      className={getButtonClasses(variant, disabled)}
+      className={className ? `${base} ${className}` : base}
     >
       {children}
     </button>

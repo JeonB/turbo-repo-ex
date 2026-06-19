@@ -15,10 +15,12 @@ type RunWorkflowGraphProps = {
 };
 
 function matchStepStatus(
+  nodeId: string,
   nodeLabel: string,
   steps: RunStep[],
 ): "idle" | "running" | "done" | "error" | undefined {
-  const step = steps.find((s) => s.title === nodeLabel);
+  const step =
+    steps.find((s) => s.id === `step_${nodeId}`) ?? steps.find((s) => s.title === nodeLabel);
   if (!step) return "idle";
   if (step.level === "error") return "error";
   return "done";
@@ -35,7 +37,7 @@ export function RunWorkflowGraph({ runSteps, workflowId }: RunWorkflowGraphProps
         ...n,
         data: {
           ...n.data,
-          runStatus: matchStepStatus(n.data.label, runSteps),
+          runStatus: matchStepStatus(n.id, n.data.label, runSteps),
         },
       })),
       edges: flow.edges,

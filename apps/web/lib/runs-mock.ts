@@ -17,15 +17,15 @@ export const MOCK_RUNS: Run[] = [
     finishedAt: "2026-04-28T11:00:06.000Z",
     steps: [
       {
-        id: "s_1",
-        title: "Parse Webhook",
+        id: "step_n_trigger",
+        title: "Webhook Trigger",
         message: "입력 payload 파싱 완료",
         level: "info",
         startedAt: "2026-04-28T11:00:01.000Z",
       },
       {
-        id: "s_2",
-        title: "Upsert CRM Contact",
+        id: "step_n_db",
+        title: "Upsert Contact",
         message: "연락처 생성 또는 업데이트 완료",
         level: "info",
         startedAt: "2026-04-28T11:00:03.000Z",
@@ -39,15 +39,22 @@ export const MOCK_RUNS: Run[] = [
     startedAt: "2026-04-28T10:50:00.000Z",
     steps: [
       {
-        id: "s_1",
-        title: "Fetch Expiring Contracts",
+        id: "step_n_trigger",
+        title: "Daily Schedule",
+        message: "일일 스케줄 트리거 실행",
+        level: "info",
+        startedAt: "2026-04-28T10:50:00.000Z",
+      },
+      {
+        id: "step_n_db",
+        title: "Expiring Contracts",
         message: "갱신 대상 42건 조회",
         level: "info",
         startedAt: "2026-04-28T10:50:01.000Z",
       },
       {
-        id: "s_2",
-        title: "Send Email Batch",
+        id: "step_n_email",
+        title: "Renewal Batch",
         message: "SMTP rate limit 도달",
         level: "error",
         startedAt: "2026-04-28T10:50:04.000Z",
@@ -62,11 +69,18 @@ export const MOCK_RUNS: Run[] = [
     finishedAt: "2026-04-28T10:20:02.000Z",
     steps: [
       {
-        id: "s_1",
-        title: "Send Trial Email",
-        message: "체험 안내 메일 발송 전 사용자가 구독을 취소함",
+        id: "step_n_trigger",
+        title: "Trial Started",
+        message: "trial.started 이벤트 수신",
         level: "info",
         startedAt: "2026-04-28T10:20:00.000Z",
+      },
+      {
+        id: "step_n_slack",
+        title: "Notify Sales",
+        message: "체험 안내 전 사용자가 구독을 취소함",
+        level: "info",
+        startedAt: "2026-04-28T10:20:01.000Z",
       },
     ],
   },

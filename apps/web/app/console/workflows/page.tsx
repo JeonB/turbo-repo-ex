@@ -1,5 +1,6 @@
 import { Alert } from "@repo/ui/alert";
 import { PermissionGate } from "../../../components/permission-gate";
+import { getConsoleApiBaseUrl } from "../../../lib/console-api";
 import { hasPermission } from "../../../lib/rbac";
 import { getSession } from "../../../lib/session";
 import { getWorkflowsData } from "../../../lib/workflows-mock";
@@ -9,6 +10,7 @@ export default async function WorkflowsPage() {
   const workflows = await getWorkflowsData();
   const session = await getSession();
   const canManage = session ? hasPermission(session.role, "workflows:manage") : false;
+  const apiConfigured = Boolean(getConsoleApiBaseUrl());
 
   return (
     <div className="ui:mx-auto ui:max-w-5xl ui:px-4 ui:py-10 ui:text-text-primary sm:ui:px-6 lg:ui:px-8">
@@ -26,7 +28,11 @@ export default async function WorkflowsPage() {
         permission="workflows:read"
       >
         <div className="ui:mt-8 ui:overflow-x-auto ui:rounded-ui-lg ui:border ui:border-border-subtle ui:bg-surface-raised ui:p-4">
-          <WorkflowsTable initialWorkflows={workflows} showCreate={canManage} />
+          <WorkflowsTable
+            apiConfigured={apiConfigured}
+            initialWorkflows={workflows}
+            showCreate={canManage}
+          />
         </div>
       </PermissionGate>
     </div>

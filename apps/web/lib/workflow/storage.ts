@@ -1,4 +1,5 @@
 import type { Workflow } from "@repo/api-client";
+import { deriveTriggerLabel } from "./derive-trigger-label";
 import {
   WorkflowDefinitionSchema,
   WorkflowRegistryEntrySchema,
@@ -10,6 +11,19 @@ import { SEED_DEFINITIONS, SEED_REGISTRY, createEmptyDefinition } from "./seeds"
 const REGISTRY_KEY = "workflow:registry";
 const DEFINITION_PREFIX = "workflow:definition:";
 const HYDRATED_KEY = "workflow:hydrated";
+
+const registryListeners = new Set<() => void>();
+
+function notifyRegistryListeners(): void {
+  for (const listener of registryListeners) {
+    listener();
+  }
+}
+
+export function subscribeRegistryChanges(onStoreChange: () => void): () => void {
+  registryListeners.add(onStoreChange);
+  return () => registryListeners.delete(onStoreChange);
+}
 
 function definitionKey(workflowId: string): string {
   return `${DEFINITION_PREFIX}${workflowId}`;
@@ -59,6 +73,7 @@ function zodParseRegistry(raw: unknown): WorkflowRegistryEntry[] {
 export function saveRegistry(entries: WorkflowRegistryEntry[]): void {
   if (!isBrowser()) return;
   window.localStorage.setItem(REGISTRY_KEY, JSON.stringify(entries));
+  notifyRegistryListeners();
 }
 
 export function loadDefinition(workflowId: string): WorkflowDefinition | null {
@@ -82,14 +97,7 @@ export function saveDefinition(workflowId: string, definition: WorkflowDefinitio
 
   const registry = loadRegistry();
   const idx = registry.findIndex((e) => e.id === workflowId);
-  const triggerNode = definition.nodes.find((n: { type: string }) => n.type === "trigger");
-  const triggerLabel = triggerNode
-    ? triggerNode.data.trigger?.kind === "webhook"
-      ? `webhook.${triggerNode.data.trigger.path?.replace(/^\//, "") ?? "inbound"}`
-      : triggerNode.data.trigger?.kind === "schedule"
-        ? `schedule.${triggerNode.data.trigger.schedule ?? "daily"}`
-        : `event.${triggerNode.data.trigger?.eventName ?? "unknown"}`
-    : "manual";
+  const triggerLabel = deriveTriggerLabel(definition);
 
   const updated: WorkflowRegistryEntry = {
     id: workflowId,
@@ -115,7 +123,7 @@ export function createWorkflow(name: string): { id: string; definition: Workflow
   const entry: WorkflowRegistryEntry = {
     id,
     name,
-    trigger: "webhook./hooks/inbound",
+    trigger: deriveTriggerLabel(definition),
     status: "draft",
     updatedAt: new Date().toISOString(),
   };

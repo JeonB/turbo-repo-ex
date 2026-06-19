@@ -1,13 +1,19 @@
 "use client";
 
 import Link from "next/link";
-import { useSyncExternalStore } from "react";
+import { useCallback, useSyncExternalStore } from "react";
 import type { Workflow } from "@repo/api-client";
 import { Badge } from "@repo/ui/badge";
 import { Button } from "@repo/ui/button";
 import { DataTable, type DataTableColumn } from "@repo/ui/data-table";
 import { RunStatusBadge } from "@repo/ui/run-status-badge";
-import { ensureWorkflowSeeds, loadRegistry, registryToWorkflows } from "../../../lib/workflow";
+import {
+  ensureWorkflowSeeds,
+  loadRegistry,
+  mergeWorkflowLists,
+  registryToWorkflows,
+  subscribeRegistryChanges,
+} from "../../../lib/workflow";
 
 type WorkflowRow = Workflow;
 
@@ -69,23 +75,32 @@ const columns: DataTableColumn<WorkflowRow>[] = [
 function subscribeRegistry(onStoreChange: () => void): () => void {
   const handler = (): void => onStoreChange();
   window.addEventListener("storage", handler);
-  return () => window.removeEventListener("storage", handler);
-}
-
-function getRegistrySnapshot(): Workflow[] {
-  ensureWorkflowSeeds();
-  return registryToWorkflows(loadRegistry());
+  const unsubscribeLocal = subscribeRegistryChanges(handler);
+  return () => {
+    window.removeEventListener("storage", handler);
+    unsubscribeLocal();
+  };
 }
 
 type WorkflowsTableProps = {
+  apiConfigured: boolean;
   initialWorkflows: Workflow[];
   showCreate?: boolean;
 };
 
-export function WorkflowsTable({ initialWorkflows, showCreate }: WorkflowsTableProps) {
+export function WorkflowsTable({ apiConfigured, initialWorkflows, showCreate }: WorkflowsTableProps) {
+  const getSnapshot = useCallback((): Workflow[] => {
+    ensureWorkflowSeeds();
+    const local = registryToWorkflows(loadRegistry());
+    if (!apiConfigured) {
+      return local;
+    }
+    return mergeWorkflowLists(initialWorkflows, local);
+  }, [apiConfigured, initialWorkflows]);
+
   const workflows = useSyncExternalStore(
     subscribeRegistry,
-    getRegistrySnapshot,
+    getSnapshot,
     () => initialWorkflows,
   );
 

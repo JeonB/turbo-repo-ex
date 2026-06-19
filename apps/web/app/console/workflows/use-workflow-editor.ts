@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   addEdge,
   applyEdgeChanges,
@@ -60,6 +60,16 @@ export function useWorkflowEditor({ workflowId }: UseWorkflowEditorOptions) {
   const [runSteps, setRunSteps] = useState<RunStep[]>([]);
   const [runWarnings, setRunWarnings] = useState<string[]>([]);
   const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const nodesRef = useRef(nodes);
+  const edgesRef = useRef(edges);
+
+  useEffect(() => {
+    nodesRef.current = nodes;
+  }, [nodes]);
+
+  useEffect(() => {
+    edgesRef.current = edges;
+  }, [edges]);
 
   const persist = useCallback(
     (nextNodes: WorkflowFlowNode[], nextEdges: WorkflowFlowEdge[]) => {
@@ -77,26 +87,34 @@ export function useWorkflowEditor({ workflowId }: UseWorkflowEditorOptions) {
     [persist],
   );
 
+  const flushPersist = useCallback(() => {
+    if (saveTimer.current) {
+      clearTimeout(saveTimer.current);
+      saveTimer.current = null;
+    }
+    persist(nodesRef.current, edgesRef.current);
+  }, [persist]);
+
   const onNodesChange = useCallback(
     (changes: NodeChange<WorkflowFlowNode>[]) => {
       setNodes((prev) => {
         const next = applyNodeChanges(changes, prev);
-        schedulePersist(next, edges);
+        schedulePersist(next, edgesRef.current);
         return next;
       });
     },
-    [edges, schedulePersist],
+    [schedulePersist],
   );
 
   const onEdgesChange = useCallback(
     (changes: EdgeChange<WorkflowFlowEdge>[]) => {
       setEdges((prev) => {
         const next = applyEdgeChanges(changes, prev);
-        schedulePersist(nodes, next);
+        schedulePersist(nodesRef.current, next);
         return next;
       });
     },
-    [nodes, schedulePersist],
+    [schedulePersist],
   );
 
   const onConnect = useCallback(
@@ -106,11 +124,11 @@ export function useWorkflowEditor({ workflowId }: UseWorkflowEditorOptions) {
           { ...connection, id: `e_${connection.source}_${connection.target}` },
           prev,
         );
-        schedulePersist(nodes, next);
+        schedulePersist(nodesRef.current, next);
         return next;
       });
     },
-    [nodes, schedulePersist],
+    [schedulePersist],
   );
 
   const onDropNode = useCallback(
@@ -126,11 +144,11 @@ export function useWorkflowEditor({ workflowId }: UseWorkflowEditorOptions) {
       };
       setNodes((prev) => {
         const next = [...prev, newNode];
-        schedulePersist(next, edges);
+        schedulePersist(next, edgesRef.current);
         return next;
       });
     },
-    [edges, schedulePersist],
+    [schedulePersist],
   );
 
   const updateNodeData = useCallback(
@@ -147,20 +165,23 @@ export function useWorkflowEditor({ workflowId }: UseWorkflowEditorOptions) {
             },
           };
         });
-        schedulePersist(next, edges);
+        schedulePersist(next, edgesRef.current);
         return next;
       });
     },
-    [edges, schedulePersist],
+    [schedulePersist],
   );
 
   const saveNow = useCallback(() => {
-    persist(nodes, edges);
+    flushPersist();
     updateWorkflowMeta(workflowId, { name: workflowName });
-  }, [edges, nodes, persist, workflowId, workflowName]);
+  }, [flushPersist, workflowId, workflowName]);
 
   const runTest = useCallback(() => {
-    const definition = xyFlowToDefinition(nodes, edges);
+    flushPersist();
+    const currentNodes = nodesRef.current;
+    const currentEdges = edgesRef.current;
+    const definition = xyFlowToDefinition(currentNodes, currentEdges);
     const result = executeWorkflow(definition);
     setRunSteps(result.steps);
     setRunWarnings(result.warnings);
@@ -174,7 +195,7 @@ export function useWorkflowEditor({ workflowId }: UseWorkflowEditorOptions) {
         },
       })),
     );
-  }, [edges, nodes]);
+  }, [flushPersist]);
 
   const selectedNode = useMemo(
     () => nodes.find((n) => n.id === selectedNodeId) ?? null,

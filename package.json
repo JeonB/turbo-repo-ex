@@ -18,10 +18,10 @@
     "prettier-plugin-tailwindcss": "^0.8.0",
     "turbo": "^2.9.12"
   },
-  "packageManager": "pnpm@10.19.0",
   "engines": {
     "node": ">=18"
   },
+  "packageManager": "pnpm@10.19.0",
   "pnpm": {
     "onlyBuiltDependencies": [
       "@parcel/watcher",

@@ -36,5 +36,6 @@ export type {
   RunStepLogLevel,
   UsageSummaryDto,
   Workflow,
+  WorkflowDetail,
   WorkflowStatus,
 } from "./types";

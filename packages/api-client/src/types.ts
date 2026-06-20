@@ -82,6 +82,10 @@ export type Workflow = {
   updatedAt: string;
 };
 
+export type WorkflowDetail = Workflow & {
+  definition: unknown;
+};
+
 export type RunStepLogLevel = "info" | "warning" | "error";
 
 export type RunStep = {

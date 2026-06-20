@@ -4,7 +4,7 @@ import { readApiDevSimulation } from "./api-dev-simulation-server";
 import { getConsoleApiBaseUrl, requireConsoleApiClient, withMockFallback } from "./console-api";
 
 /** Revalidation window for org-common console data cached with `unstable_cache`. */
-export const CONSOLE_DATA_REVALIDATE_SECONDS = 60;
+export const CONSOLE_DATA_REVALIDATE_SECONDS = 30;
 
 /** Cache tag shared by all cached console data (revalidate via `revalidateTag`). */
 export const CONSOLE_DATA_CACHE_TAG = "console-data";

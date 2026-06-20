@@ -32,3 +32,6 @@ yarn-error.log*
 
 # vercel
 .vercel
+
+# workflow server store (mock API persistence)
+.workflow-data

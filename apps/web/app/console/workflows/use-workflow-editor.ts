@@ -15,8 +15,12 @@ import {
   definitionToXYFlow,
   ensureWorkflowSeeds,
   executeWorkflow,
+  fetchWorkflowDetail,
+  isWorkflowApiEnabled,
   loadDefinition,
   loadRegistry,
+  patchWorkflowMetaRemote,
+  putWorkflowDefinitionRemote,
   saveDefinition,
   updateWorkflowMeta,
   xyFlowToDefinition,
@@ -27,6 +31,7 @@ import {
   AUTOMATION_NODE_TYPES,
   defaultNodeData,
   summarizeNodeData,
+  WorkflowDefinitionSchema,
   type AutomationNodeType,
   type NodeRunStatus,
   type WorkflowNodeData,
@@ -52,6 +57,7 @@ type UseWorkflowEditorOptions = {
 };
 
 export function useWorkflowEditor({ workflowId }: UseWorkflowEditorOptions) {
+  const apiEnabled = isWorkflowApiEnabled();
   const initial = useMemo(() => loadInitialFlow(workflowId), [workflowId]);
   const [workflowName, setWorkflowName] = useState(initial.name);
   const [nodes, setNodes] = useState<WorkflowFlowNode[]>(initial.nodes);
@@ -59,6 +65,7 @@ export function useWorkflowEditor({ workflowId }: UseWorkflowEditorOptions) {
   const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
   const [runSteps, setRunSteps] = useState<RunStep[]>([]);
   const [runWarnings, setRunWarnings] = useState<string[]>([]);
+  const [remoteLoaded, setRemoteLoaded] = useState(!apiEnabled);
   const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const nodesRef = useRef(nodes);
   const edgesRef = useRef(edges);
@@ -71,12 +78,38 @@ export function useWorkflowEditor({ workflowId }: UseWorkflowEditorOptions) {
     edgesRef.current = edges;
   }, [edges]);
 
+  useEffect(() => {
+    if (!apiEnabled) return;
+    let cancelled = false;
+    void fetchWorkflowDetail(workflowId)
+      .then((detail) => {
+        if (cancelled) return;
+        const parsed = WorkflowDefinitionSchema.safeParse(detail.definition);
+        if (parsed.success) {
+          const flow = definitionToXYFlow(parsed.data);
+          setNodes(flow.nodes);
+          setEdges(flow.edges);
+        }
+        setWorkflowName(detail.name);
+      })
+      .finally(() => {
+        if (!cancelled) setRemoteLoaded(true);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [apiEnabled, workflowId]);
+
   const persist = useCallback(
     (nextNodes: WorkflowFlowNode[], nextEdges: WorkflowFlowEdge[]) => {
       const definition = xyFlowToDefinition(nextNodes, nextEdges);
+      if (apiEnabled) {
+        void putWorkflowDefinitionRemote(workflowId, definition);
+        return;
+      }
       saveDefinition(workflowId, definition);
     },
-    [workflowId],
+    [apiEnabled, workflowId],
   );
 
   const schedulePersist = useCallback(
@@ -174,8 +207,12 @@ export function useWorkflowEditor({ workflowId }: UseWorkflowEditorOptions) {
 
   const saveNow = useCallback(() => {
     flushPersist();
+    if (apiEnabled) {
+      void patchWorkflowMetaRemote(workflowId, { name: workflowName });
+      return;
+    }
     updateWorkflowMeta(workflowId, { name: workflowName });
-  }, [flushPersist, workflowId, workflowName]);
+  }, [apiEnabled, flushPersist, workflowId, workflowName]);
 
   const runTest = useCallback(() => {
     flushPersist();
@@ -219,5 +256,6 @@ export function useWorkflowEditor({ workflowId }: UseWorkflowEditorOptions) {
     runTest,
     runSteps,
     runWarnings,
+    remoteLoaded,
   };
 }

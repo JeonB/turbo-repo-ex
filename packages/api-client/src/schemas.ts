@@ -72,6 +72,19 @@ export const WorkflowSchema = z.object({
   updatedAt: z.string().datetime({ offset: true }),
 });
 
+export const WorkflowDetailSchema = WorkflowSchema.extend({
+  definition: z.unknown(),
+});
+
+export const WorkflowDefinitionPutResponseSchema = z.object({
+  id: z.string().min(1),
+  updatedAt: z.string().datetime({ offset: true }),
+});
+
+export const CreateWorkflowBodySchema = z.object({
+  name: z.string().min(1),
+});
+
 export const RunStepLogLevelSchema = z.enum(["info", "warning", "error"]);
 
 export const RunStepSchema = z.object({

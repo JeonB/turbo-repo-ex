@@ -7,6 +7,8 @@ import {
   RunSchema,
   UsageSummaryDtoSchema,
   WorkflowSchema,
+  WorkflowDetailSchema,
+  WorkflowDefinitionPutResponseSchema,
 } from "./schemas";
 import type {
   AuditEventAction,
@@ -19,6 +21,8 @@ import type {
   Run,
   UsageSummaryDto,
   Workflow,
+  WorkflowDetail,
+  WorkflowStatus,
 } from "./types";
 
 /**
@@ -220,6 +224,21 @@ export type ConsoleApiClient = {
   getRun: (runId: string, options?: ConsoleApiRequestOptions) => Promise<Run>;
   getRuns: (options?: ConsoleApiRequestOptions) => Promise<Run[]>;
   getWorkflows: (options?: ConsoleApiRequestOptions) => Promise<Workflow[]>;
+  getWorkflow: (workflowId: string, options?: ConsoleApiRequestOptions) => Promise<WorkflowDetail>;
+  createWorkflow: (
+    body: { name: string },
+    options?: ConsoleApiRequestOptions,
+  ) => Promise<WorkflowDetail>;
+  patchWorkflow: (
+    workflowId: string,
+    body: { name?: string; status?: WorkflowStatus },
+    options?: ConsoleApiRequestOptions,
+  ) => Promise<WorkflowDetail>;
+  putWorkflowDefinition: (
+    workflowId: string,
+    definition: unknown,
+    options?: ConsoleApiRequestOptions,
+  ) => Promise<{ id: string; updatedAt: string }>;
   getNotifications: (params?: GetNotificationsParams) => Promise<NotificationDto[]>;
   getMembers: (options?: ConsoleApiRequestOptions) => Promise<MemberSummary[]>;
 };
@@ -365,6 +384,45 @@ export function createConsoleApiClient(config: ConsoleApiClientConfig): ConsoleA
     getWorkflows: (options) =>
       request<Workflow[]>("/v1/workflows", { signal: options?.signal }, (raw) =>
         WorkflowSchema.array().parse(raw),
+      ),
+    getWorkflow: (workflowId, options) =>
+      request<WorkflowDetail>(
+        `/v1/workflows/${encodeURIComponent(workflowId)}`,
+        { signal: options?.signal },
+        (raw) => WorkflowDetailSchema.parse(raw),
+      ),
+    createWorkflow: (body, options) =>
+      request<WorkflowDetail>(
+        "/v1/workflows",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(body),
+          signal: options?.signal,
+        },
+        (raw) => WorkflowDetailSchema.parse(raw),
+      ),
+    patchWorkflow: (workflowId, body, options) =>
+      request<WorkflowDetail>(
+        `/v1/workflows/${encodeURIComponent(workflowId)}`,
+        {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(body),
+          signal: options?.signal,
+        },
+        (raw) => WorkflowDetailSchema.parse(raw),
+      ),
+    putWorkflowDefinition: (workflowId, definition, options) =>
+      request<{ id: string; updatedAt: string }>(
+        `/v1/workflows/${encodeURIComponent(workflowId)}/definition`,
+        {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(definition),
+          signal: options?.signal,
+        },
+        (raw) => WorkflowDefinitionPutResponseSchema.parse(raw),
       ),
     getRun: (runId, options) =>
       request<Run>(`/v1/runs/${encodeURIComponent(runId)}`, { signal: options?.signal }, (raw) =>

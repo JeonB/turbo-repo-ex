@@ -85,8 +85,12 @@ export async function applyMockApiSimulation(headers: Headers): Promise<Response
   }
 }
 
-export function mockApiJson(data: unknown, options?: { cacheControl?: string }): Response {
+export function mockApiJson(
+  data: unknown,
+  options?: { cacheControl?: string; status?: number },
+): Response {
   return Response.json(data, {
+    status: options?.status ?? 200,
     headers: { "Cache-Control": options?.cacheControl ?? MOCK_API_SWR_CACHE_CONTROL },
   });
 }

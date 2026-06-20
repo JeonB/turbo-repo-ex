@@ -10,6 +10,7 @@ import {
   isApiDevSimulationActive,
   serializeApiDevSimulation,
 } from "./api-dev-simulation";
+import { markMockFallbackUsed } from "./console-degradation";
 
 /** Header carrying the dev simulation config to the mock API route handlers. */
 export const API_DEV_SIMULATION_HEADER = "x-api-dev-simulation";
@@ -75,6 +76,7 @@ export async function withMockFallback<T>(fetcher: () => Promise<T>, fallback: (
   } catch (error) {
     if (isTransientApiError(error)) {
       console.warn("[console-api] transient API failure; serving mock fallback", error);
+      markMockFallbackUsed();
       return fallback();
     }
     throw error;

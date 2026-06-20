@@ -5,3 +5,4 @@ export * from "./xyflow";
 export * from "./execute-workflow";
 export * from "./derive-trigger-label";
 export * from "./merge-workflows";
+export * from "./remote-storage";

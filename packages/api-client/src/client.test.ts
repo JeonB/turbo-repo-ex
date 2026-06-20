@@ -497,6 +497,44 @@ describe("createConsoleApiClient", () => {
     await expect(client.getWorkflows()).resolves.toHaveLength(1);
   });
 
+  it("parses workflow detail and definition endpoints", async () => {
+    const definition = { version: 1, nodes: [], edges: [] };
+    const fetchImpl = vi
+      .fn()
+      .mockResolvedValueOnce(
+        new Response(
+          JSON.stringify({
+            id: "wf_1",
+            name: "Lead Sync",
+            trigger: "webhook.lead.created",
+            status: "active",
+            updatedAt: "2026-04-28T11:00:00.000Z",
+            definition,
+          }),
+          { status: 200, headers: { "Content-Type": "application/json" } },
+        ),
+      )
+      .mockResolvedValueOnce(
+        new Response(JSON.stringify({ id: "wf_1", updatedAt: "2026-04-28T12:00:00.000Z" }), {
+          status: 200,
+          headers: { "Content-Type": "application/json" },
+        }),
+      );
+    const client = createConsoleApiClient({
+      baseUrl: "https://api.example",
+      fetchImpl,
+      requestTimeoutMs: 5_000,
+    });
+
+    await expect(client.getWorkflow("wf_1")).resolves.toMatchObject({
+      id: "wf_1",
+      definition,
+    });
+    await expect(client.putWorkflowDefinition("wf_1", definition)).resolves.toMatchObject({
+      id: "wf_1",
+    });
+  });
+
   it("throws ConsoleApiNetworkError for DOMException NetworkError", async () => {
     const fetchImpl = vi.fn(async (): Promise<Response> => {
       throw new DOMException("network down", "NetworkError");

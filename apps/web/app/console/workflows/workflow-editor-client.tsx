@@ -35,9 +35,14 @@ export function WorkflowEditorClient({ canManage, workflowId }: WorkflowEditorCl
     runTest,
     runSteps,
     runWarnings,
+    remoteLoaded,
   } = useWorkflowEditor({ workflowId });
 
   const readOnly = !canManage;
+
+  if (!remoteLoaded) {
+    return <p className="ui:text-sm ui:text-text-secondary">워크플로 정의를 불러오는 중…</p>;
+  }
 
   return (
     <div className="ui:space-y-6">

@@ -12,8 +12,12 @@ const getRequestScopedState = cache(
 
 let vitestDegradationState: ConsoleDegradationState | null = null;
 
+function isTestRuntime(): boolean {
+  return process.env.NODE_ENV === "test";
+}
+
 function resolveDegradationState(): ConsoleDegradationState {
-  if (process.env.VITEST === "true") {
+  if (isTestRuntime()) {
     vitestDegradationState ??= { usedMockFallback: false };
     return vitestDegradationState;
   }
@@ -30,7 +34,7 @@ export function markMockFallbackUsed(): void {
 }
 
 export function resetConsoleDegradationStateForTests(): void {
-  if (process.env.VITEST === "true") {
+  if (isTestRuntime()) {
     vitestDegradationState = { usedMockFallback: false };
   }
 }

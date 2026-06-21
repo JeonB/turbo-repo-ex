@@ -17,6 +17,7 @@ import {
   executeWorkflow,
   fetchWorkflowDetail,
   isWorkflowApiEnabled,
+  createWorkflowRunRemote,
   loadDefinition,
   loadRegistry,
   patchWorkflowMetaRemote,
@@ -218,21 +219,55 @@ export function useWorkflowEditor({ workflowId }: UseWorkflowEditorOptions) {
     flushPersist();
     const currentNodes = nodesRef.current;
     const currentEdges = edgesRef.current;
+
+    const applyRunResult = (
+      steps: RunStep[],
+      warnings: string[],
+      nodeStatuses: Record<string, NodeRunStatus>,
+    ) => {
+      setRunSteps(steps);
+      setRunWarnings(warnings);
+      setNodes((prev) =>
+        prev.map((n) => ({
+          ...n,
+          data: {
+            ...n.data,
+            runStatus: (nodeStatuses[n.id] ?? "idle") as NodeRunStatus,
+          },
+        })),
+      );
+    };
+
+    if (apiEnabled) {
+      const definition = xyFlowToDefinition(currentNodes, currentEdges);
+      void createWorkflowRunRemote(workflowId, { payload: { source: "editor-test" } })
+        .then((run) => {
+          applyRunResult(
+            run.steps,
+            [],
+            Object.fromEntries(
+              definition.nodes.map((n) => [
+                n.id,
+                run.steps.some((s) => s.id === `step_${n.id}` && s.level === "error")
+                  ? "error"
+                  : run.steps.some((s) => s.id === `step_${n.id}`)
+                    ? "done"
+                    : "idle",
+              ]),
+            ),
+          );
+        })
+        .catch(() => {
+          const result = executeWorkflow(definition);
+          applyRunResult(result.steps, result.warnings, result.nodeStatuses);
+        });
+      return;
+    }
+
     const definition = xyFlowToDefinition(currentNodes, currentEdges);
     const result = executeWorkflow(definition);
-    setRunSteps(result.steps);
-    setRunWarnings(result.warnings);
-
-    setNodes((prev) =>
-      prev.map((n) => ({
-        ...n,
-        data: {
-          ...n.data,
-          runStatus: (result.nodeStatuses[n.id] ?? "idle") as NodeRunStatus,
-        },
-      })),
-    );
-  }, [flushPersist]);
+    applyRunResult(result.steps, result.warnings, result.nodeStatuses);
+  }, [apiEnabled, flushPersist, workflowId]);
 
   const selectedNode = useMemo(
     () => nodes.find((n) => n.id === selectedNodeId) ?? null,

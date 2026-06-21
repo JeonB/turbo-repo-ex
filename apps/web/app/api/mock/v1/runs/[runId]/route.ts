@@ -1,5 +1,5 @@
 import { applyMockApiSimulation, MOCK_API_NO_STORE, mockApiJson } from "../../../../../../lib/mock-api";
-import { MOCK_RUNS } from "../../../../../../lib/runs-mock";
+import { getRunServerStore } from "../../../../../../lib/run-server-store";
 
 export async function GET(
   request: Request,
@@ -10,7 +10,7 @@ export async function GET(
     return simulated;
   }
   const { runId } = await context.params;
-  const run = MOCK_RUNS.find((candidate) => candidate.id === runId);
+  const run = await getRunServerStore().getRun(runId);
   if (!run) {
     return Response.json(
       { error: `run not found: ${runId}` },

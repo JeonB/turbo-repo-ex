@@ -239,6 +239,11 @@ export type ConsoleApiClient = {
     definition: unknown,
     options?: ConsoleApiRequestOptions,
   ) => Promise<{ id: string; updatedAt: string }>;
+  createWorkflowRun: (
+    workflowId: string,
+    body?: { payload?: Record<string, unknown> },
+    options?: ConsoleApiRequestOptions,
+  ) => Promise<Run>;
   getNotifications: (params?: GetNotificationsParams) => Promise<NotificationDto[]>;
   getMembers: (options?: ConsoleApiRequestOptions) => Promise<MemberSummary[]>;
 };
@@ -423,6 +428,17 @@ export function createConsoleApiClient(config: ConsoleApiClientConfig): ConsoleA
           signal: options?.signal,
         },
         (raw) => WorkflowDefinitionPutResponseSchema.parse(raw),
+      ),
+    createWorkflowRun: (workflowId, body, options) =>
+      request<Run>(
+        `/v1/workflows/${encodeURIComponent(workflowId)}/runs`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(body ?? {}),
+          signal: options?.signal,
+        },
+        (raw) => RunSchema.parse(raw),
       ),
     getRun: (runId, options) =>
       request<Run>(`/v1/runs/${encodeURIComponent(runId)}`, { signal: options?.signal }, (raw) =>

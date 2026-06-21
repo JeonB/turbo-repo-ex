@@ -60,3 +60,10 @@ export async function patchWorkflowMetaRemote(
   await requireClient().patchWorkflow(workflowId, patch);
   updateWorkflowMeta(workflowId, patch);
 }
+
+export async function createWorkflowRunRemote(
+  workflowId: string,
+  body?: { payload?: Record<string, unknown> },
+) {
+  return requireClient().createWorkflowRun(workflowId, body);
+}

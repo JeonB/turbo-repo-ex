@@ -50,7 +50,7 @@ export type WorkflowServerStore = {
   createWorkflow: (name: string) => Promise<StoredWorkflow>;
   updateWorkflowMeta: (
     workflowId: string,
-    patch: Partial<Pick<Workflow, "name" | "status">>,
+    patch: Partial<Pick<Workflow, "name" | "status" | "lastRunId" | "lastRunStatus">>,
   ) => Promise<StoredWorkflow | null>;
   putDefinition: (workflowId: string, definition: WorkflowDefinition) => Promise<StoredWorkflow | null>;
 };

@@ -4,7 +4,8 @@ import { Field } from "@repo/ui/field";
 import { Input } from "@repo/ui/input";
 import { Select } from "@repo/ui/select";
 import type { WorkflowFlowNode } from "../../../lib/workflow";
-import type { AutomationNodeType, WorkflowNodeData } from "../../../lib/workflow/types";
+import type { AutomationNodeType, DbQueryPreset, WorkflowNodeData } from "../../../lib/workflow/types";
+import { DB_QUERY_PRESETS } from "../../../lib/workflow/types";
 
 type WorkflowNodeInspectorProps = {
   node: WorkflowFlowNode | null;
@@ -128,14 +129,16 @@ export function WorkflowNodeInspector({ node, onUpdate, readOnly }: WorkflowNode
                 patch({
                   dbQuery: {
                     table: data.dbQuery?.table ?? "contacts",
-                    queryPreset: e.target.value as "by_id" | "list_recent" | "count",
+                    queryPreset: e.target.value as DbQueryPreset,
                   },
                 })
               }
             >
-              <option value="by_id">by_id</option>
-              <option value="list_recent">list_recent</option>
-              <option value="count">count</option>
+              {DB_QUERY_PRESETS.map((preset) => (
+                <option key={preset} value={preset}>
+                  {preset}
+                </option>
+              ))}
             </Select>
           </Field>
         </>

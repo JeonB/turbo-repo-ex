@@ -33,4 +33,20 @@ describe("workflow-server-store", () => {
     expect(loaded?.name).toBe("Test flow");
     expect(loaded?.definition.version).toBe(1);
   });
+
+  it("rejects publish when webhook path conflicts with another active workflow", async () => {
+    dataDir = mkdtempSync(path.join(tmpdir(), "wf-store-"));
+    const store = createWorkflowServerStore(dataDir);
+    const duplicate = await store.createWorkflow("Duplicate leads hook");
+    const leadsDefinition = (await store.getWorkflow("wf_leads_api"))?.definition;
+    expect(leadsDefinition).toBeDefined();
+    await store.putDefinition(duplicate.id, leadsDefinition!);
+
+    const result = await store.publishWorkflow(duplicate.id);
+    expect(result.ok).toBe(false);
+    if (!result.ok) {
+      expect(result.error).toBe("path_conflict");
+      expect(result.conflictWorkflowId).toBe("wf_leads_api");
+    }
+  });
 });

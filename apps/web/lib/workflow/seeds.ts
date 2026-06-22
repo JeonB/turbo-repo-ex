@@ -29,6 +29,13 @@ export const SEED_REGISTRY: WorkflowRegistryEntry[] = [
     lastRunStatus: "cancelled",
     updatedAt: "2026-04-28T10:20:00.000Z",
   },
+  {
+    id: "wf_leads_api",
+    name: "Leads CRUD API",
+    trigger: "webhook.leads",
+    status: "active",
+    updatedAt: "2026-06-20T12:00:00.000Z",
+  },
 ];
 
 export const SEED_DEFINITIONS: Record<string, WorkflowDefinition> = {
@@ -141,6 +148,45 @@ export const SEED_DEFINITIONS: Record<string, WorkflowDefinition> = {
       },
     ],
     edges: [{ id: "e1", source: "n_trigger", target: "n_slack" }],
+  },
+  wf_leads_api: {
+    version: 1,
+    nodes: [
+      {
+        id: "n_trigger",
+        type: "trigger",
+        position: { x: 0, y: 80 },
+        data: {
+          ...defaultNodeData("trigger", "Webhook Trigger"),
+          trigger: { kind: "webhook", path: "/hooks/leads" },
+        },
+      },
+      {
+        id: "n_db",
+        type: "dbQuery",
+        position: { x: 280, y: 80 },
+        data: {
+          ...defaultNodeData("dbQuery", "Create Lead"),
+          dbQuery: { table: "leads", queryPreset: "create" },
+        },
+      },
+      {
+        id: "n_http",
+        type: "httpResponse",
+        position: { x: 560, y: 80 },
+        data: {
+          ...defaultNodeData("httpResponse", "Created Response"),
+          httpResponse: {
+            statusCode: 201,
+            bodyTemplate: '{"id":"{{id}}","email":"{{email}}"}',
+          },
+        },
+      },
+    ],
+    edges: [
+      { id: "e1", source: "n_trigger", target: "n_db" },
+      { id: "e2", source: "n_db", target: "n_http" },
+    ],
   },
 };
 

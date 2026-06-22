@@ -4,6 +4,10 @@ import type { Workflow } from "@repo/api-client";
 import { deriveTriggerLabel } from "./workflow/derive-trigger-label";
 import { SEED_DEFINITIONS, SEED_REGISTRY } from "./workflow/seeds";
 import {
+  findWebhookPathConflict,
+  type WebhookWorkflowCandidate,
+} from "./workflow-runtime/webhook-registry";
+import {
   WorkflowDefinitionSchema,
   type WorkflowDefinition,
 } from "./workflow/types";
@@ -46,6 +50,7 @@ function parseStore(raw: string): WorkflowStoreFile {
 
 export type WorkflowServerStore = {
   listWorkflows: () => Promise<Workflow[]>;
+  listStoredWorkflows: () => Promise<StoredWorkflow[]>;
   getWorkflow: (workflowId: string) => Promise<StoredWorkflow | null>;
   createWorkflow: (name: string) => Promise<StoredWorkflow>;
   updateWorkflowMeta: (
@@ -53,6 +58,13 @@ export type WorkflowServerStore = {
     patch: Partial<Pick<Workflow, "name" | "status" | "lastRunId" | "lastRunStatus">>,
   ) => Promise<StoredWorkflow | null>;
   putDefinition: (workflowId: string, definition: WorkflowDefinition) => Promise<StoredWorkflow | null>;
+  publishWorkflow: (
+    workflowId: string,
+  ) => Promise<
+    | { ok: true; workflow: StoredWorkflow }
+    | { ok: false; error: "not_found" }
+    | { ok: false; error: "path_conflict"; conflictWorkflowId: string }
+  >;
 };
 
 export function createWorkflowServerStore(dataDir = DEFAULT_DATA_DIR): WorkflowServerStore {
@@ -82,6 +94,11 @@ export function createWorkflowServerStore(dataDir = DEFAULT_DATA_DIR): WorkflowS
     async listWorkflows() {
       const store = await readStore();
       return Object.values(store.workflows).map(({ definition: _d, ...meta }) => meta);
+    },
+
+    async listStoredWorkflows() {
+      const store = await readStore();
+      return Object.values(store.workflows);
     },
 
     async getWorkflow(workflowId) {
@@ -151,6 +168,29 @@ export function createWorkflowServerStore(dataDir = DEFAULT_DATA_DIR): WorkflowS
       store.workflows[workflowId] = next;
       await writeStore(store);
       return next;
+    },
+
+    async publishWorkflow(workflowId) {
+      const store = await readStore();
+      const current = store.workflows[workflowId];
+      if (!current) {
+        return { ok: false, error: "not_found" };
+      }
+
+      const candidates: WebhookWorkflowCandidate[] = Object.values(store.workflows);
+      const conflict = findWebhookPathConflict(candidates, workflowId, current.definition);
+      if (conflict) {
+        return { ok: false, error: "path_conflict", conflictWorkflowId: conflict.id };
+      }
+
+      const next: StoredWorkflow = {
+        ...current,
+        status: "active",
+        updatedAt: new Date().toISOString(),
+      };
+      store.workflows[workflowId] = next;
+      await writeStore(store);
+      return { ok: true, workflow: next };
     },
   };
 }

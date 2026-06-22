@@ -21,5 +21,12 @@ describe("resource-store", () => {
     expect(row.id).toMatch(/^row_/);
     const rows = await store.listRows("leads");
     expect(rows).toHaveLength(1);
+
+    const updated = await store.updateRow("leads", row.id, { name: "Updated" });
+    expect(updated?.data.name).toBe("Updated");
+
+    const deleted = await store.deleteRow("leads", row.id);
+    expect(deleted).toBe(true);
+    expect(await store.listRows("leads")).toHaveLength(0);
   });
 });

@@ -72,8 +72,50 @@ export async function handleDbQueryNode(
         patch: { rowCount: count },
       };
     }
-    default:
-      return { message: `Unsupported dbQuery preset: ${preset}`, level: "error" };
+    case "create": {
+      const { id: _omit, ...data } = ctx.payload;
+      const row = await resources.createRow(table, data);
+      return {
+        message: `Created row in ${table}`,
+        level: "info",
+        patch: { lastRow: { id: row.id, ...row.data }, rowCount: 1 },
+      };
+    }
+    case "update": {
+      const id = payloadId(ctx);
+      if (!id) {
+        return { message: `Missing payload.id for ${table} update`, level: "error" };
+      }
+      const { id: _omit, ...patch } = ctx.payload;
+      const row = await resources.updateRow(table, id, patch);
+      if (!row) {
+        return { message: `No row found in ${table} for id ${id}`, level: "error" };
+      }
+      return {
+        message: `Updated ${table} row ${id}`,
+        level: "info",
+        patch: { lastRow: { id: row.id, ...row.data }, rowCount: 1 },
+      };
+    }
+    case "delete": {
+      const id = payloadId(ctx);
+      if (!id) {
+        return { message: `Missing payload.id for ${table} delete`, level: "error" };
+      }
+      const deleted = await resources.deleteRow(table, id);
+      if (!deleted) {
+        return { message: `No row found in ${table} for id ${id}`, level: "error" };
+      }
+      return {
+        message: `Deleted ${table} row ${id}`,
+        level: "info",
+        patch: { lastRow: { id }, rowCount: 0 },
+      };
+    }
+    default: {
+      const _exhaustive: never = preset;
+      return { message: `Unsupported dbQuery preset: ${String(_exhaustive)}`, level: "error" };
+    }
   }
 }
 

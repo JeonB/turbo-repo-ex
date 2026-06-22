@@ -24,9 +24,20 @@ export const TriggerNodeConfigSchema = z.object({
   eventName: z.string().optional(),
 });
 
+export const DB_QUERY_PRESETS = [
+  "by_id",
+  "list_recent",
+  "count",
+  "create",
+  "update",
+  "delete",
+] as const;
+
+export type DbQueryPreset = (typeof DB_QUERY_PRESETS)[number];
+
 export const DbQueryNodeConfigSchema = z.object({
   table: z.string().default("contacts"),
-  queryPreset: z.enum(["by_id", "list_recent", "count"]).default("list_recent"),
+  queryPreset: z.enum(DB_QUERY_PRESETS).default("list_recent"),
 });
 
 export const HttpResponseNodeConfigSchema = z.object({

@@ -535,6 +535,36 @@ describe("createConsoleApiClient", () => {
     });
   });
 
+  it("parses publish workflow endpoint", async () => {
+    const fetchImpl = vi.fn().mockResolvedValueOnce(
+      new Response(
+        JSON.stringify({
+          id: "wf_1",
+          name: "Lead Sync",
+          trigger: "webhook.lead.created",
+          status: "active",
+          updatedAt: "2026-04-28T12:00:00.000Z",
+          definition: { version: 1, nodes: [], edges: [] },
+        }),
+        { status: 200, headers: { "Content-Type": "application/json" } },
+      ),
+    );
+    const client = createConsoleApiClient({
+      baseUrl: "https://api.example",
+      fetchImpl,
+      requestTimeoutMs: 5_000,
+    });
+
+    await expect(client.publishWorkflow("wf_1")).resolves.toMatchObject({
+      id: "wf_1",
+      status: "active",
+    });
+    expect(fetchImpl).toHaveBeenCalledWith(
+      "https://api.example/v1/workflows/wf_1/publish",
+      expect.objectContaining({ method: "POST" }),
+    );
+  });
+
   it("throws ConsoleApiNetworkError for DOMException NetworkError", async () => {
     const fetchImpl = vi.fn(async (): Promise<Response> => {
       throw new DOMException("network down", "NetworkError");

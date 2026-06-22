@@ -73,7 +73,8 @@ function runNodeSimulated(
     case "dbQuery": {
       const table = node.data.dbQuery?.table ?? "table";
       const preset = node.data.dbQuery?.queryPreset ?? "list_recent";
-      const count = preset === "count" ? 42 : preset === "by_id" ? 1 : 12;
+      const count =
+        preset === "count" ? 42 : preset === "by_id" || preset === "update" ? 1 : preset === "delete" ? 0 : 12;
       context.rows = count;
       return { message: `Queried ${table} (${preset}): ${count} row(s)`, level: "info" };
     }

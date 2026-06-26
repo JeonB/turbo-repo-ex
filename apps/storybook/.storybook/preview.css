@@ -6,3 +6,9 @@
 @source "../stories/**/*.tsx";
 @source "../stories/**/*.ts";
 @source "../../../packages/ui/src/**/*.tsx";
+
+body {
+  font-family: var(--font-ui-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}

@@ -74,8 +74,9 @@ export default function FoundationsPage() {
           시맨틱 서피스·텍스트 토큰이 바뀝니다. 기본값은 다크 분석 대시보드에 맞춰져 있습니다.
         </p>
         <p className="mt-2 text-sm text-neutral-400">
-          <strong className="text-neutral-300">확장 토큰:</strong> 타이포(<code className="rounded bg-neutral-900 px-1">text-ui-*</code>,{" "}
-          <code className="rounded bg-neutral-900 px-1">leading-ui-*</code>), 간격 스케일(<code className="rounded bg-neutral-900 px-1">spacing-ui-*</code>),
+          <strong className="text-neutral-300">확장 토큰:</strong> 폰트(<code className="rounded bg-neutral-900 px-1">font-ui-sans</code>,{" "}
+          <code className="rounded bg-neutral-900 px-1">font-ui-mono</code>), 타이포(<code className="rounded bg-neutral-900 px-1">text-ui-*</code>,{" "}
+          <code className="rounded bg-neutral-900 px-1">leading-ui-*</code>, <code className="rounded bg-neutral-900 px-1">font-weight-ui-*</code>), 간격 스케일(<code className="rounded bg-neutral-900 px-1">spacing-ui-*</code>),
           모션(<code className="rounded bg-neutral-900 px-1">duration-ui-*</code>, <code className="rounded bg-neutral-900 px-1">ease-ui-*</code>),
           z-index(<code className="rounded bg-neutral-900 px-1">z-index-ui-*</code>), 포커스 링 참조(
           <code className="rounded bg-neutral-900 px-1">ring-*-ui</code>)는 시맨틱 색과 함께 정의됩니다.
@@ -168,26 +169,117 @@ export default function FoundationsPage() {
       </section>
 
       <section className="mt-10 space-y-4">
-        <h2 className="text-xl font-semibold text-white">타이포 스케일</h2>
+        <h2 className="text-xl font-semibold text-white">타이포그래피</h2>
         <p className="text-sm text-neutral-400">
-          <code className="rounded bg-neutral-900 px-1">text-ui-xs</code>부터{" "}
-          <code className="rounded bg-neutral-900 px-1">text-ui-2xl</code>까지의 글자 크기입니다.
+          기본 본문 폰트는 Pretendard Variable입니다.{" "}
+          <code className="rounded bg-neutral-900 px-1">font-ui-sans</code> /{" "}
+          <code className="rounded bg-neutral-900 px-1">font-ui-mono</code>와 크기·굵기·행간 토큰을 조합해
+          UI 전반의 타이포 리듬을 맞춥니다.
         </p>
-        <div className="flex flex-col gap-3">
+
+        <h3 className="mt-4 text-sm font-semibold uppercase tracking-wide text-neutral-400">폰트 패밀리</h3>
+        <div className="grid gap-4 sm:grid-cols-2">
           {[
-            { name: "text-ui-xs", size: "0.75rem" },
-            { name: "text-ui-sm", size: "0.875rem" },
-            { name: "text-ui-base", size: "1rem" },
-            { name: "text-ui-lg", size: "1.125rem" },
-            { name: "text-ui-xl", size: "1.25rem" },
-            { name: "text-ui-2xl", size: "1.5rem" },
-          ].map((t) => (
-            <div key={t.name} className="flex items-baseline gap-4">
-              <code className="w-28 shrink-0 text-right text-xs text-neutral-400">{t.name}</code>
-              <span className="text-white" style={{ fontSize: t.size }}>
+            {
+              name: "font-ui-sans",
+              alias: "font-sans (앱)",
+              sample: "Aa 가나다 123",
+              family: "var(--font-ui-sans)",
+            },
+            {
+              name: "font-ui-mono",
+              alias: "font-mono (앱)",
+              sample: "const runId = 'wf_01';",
+              family: "var(--font-ui-mono)",
+            },
+          ].map((font) => (
+            <div
+              key={font.name}
+              className="rounded-lg border border-neutral-700 bg-neutral-900/60 p-4"
+            >
+              <p className="text-2xl text-white" style={{ fontFamily: font.family }}>
+                {font.sample}
+              </p>
+              <p className="mt-3 text-xs text-neutral-500" style={{ fontFamily: font.family }}>
+                다람쥐 헌 쳇바퀴에 타고파 · The quick brown fox
+              </p>
+              <div className="mt-3 flex flex-wrap gap-2">
+                <code className="rounded bg-neutral-800 px-1.5 py-0.5 text-[10px] text-neutral-300">
+                  {font.name}
+                </code>
+                <code className="rounded bg-neutral-800 px-1.5 py-0.5 text-[10px] text-neutral-500">
+                  {font.alias}
+                </code>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <h3 className="mt-6 text-sm font-semibold uppercase tracking-wide text-neutral-400">글자 크기</h3>
+        <div className="flex flex-col gap-3 rounded-lg border border-neutral-800 bg-neutral-900/40 p-4">
+          {[
+            { name: "text-ui-xs", size: "var(--text-ui-xs)" },
+            { name: "text-ui-sm", size: "var(--text-ui-sm)" },
+            { name: "text-ui-base", size: "var(--text-ui-base)" },
+            { name: "text-ui-lg", size: "var(--text-ui-lg)" },
+            { name: "text-ui-xl", size: "var(--text-ui-xl)" },
+            { name: "text-ui-2xl", size: "var(--text-ui-2xl)" },
+          ].map((token) => (
+            <div key={token.name} className="flex items-baseline gap-4 border-b border-neutral-800/80 pb-3 last:border-0 last:pb-0">
+              <code className="w-28 shrink-0 text-right text-xs text-neutral-400">{token.name}</code>
+              <span className="font-sans text-white" style={{ fontSize: token.size }}>
                 다람쥐 헌 쳇바퀴에 타고파
               </span>
-              <span className="text-xs text-neutral-500">{t.size}</span>
+              <span className="text-xs text-neutral-500">{token.size}</span>
+            </div>
+          ))}
+        </div>
+
+        <h3 className="mt-6 text-sm font-semibold uppercase tracking-wide text-neutral-400">굵기</h3>
+        <div className="grid gap-3 sm:grid-cols-2">
+          {[
+            { name: "font-weight-ui-normal", weight: "var(--font-weight-ui-normal)", label: "400" },
+            { name: "font-weight-ui-medium", weight: "var(--font-weight-ui-medium)", label: "500" },
+            { name: "font-weight-ui-semibold", weight: "var(--font-weight-ui-semibold)", label: "600" },
+            { name: "font-weight-ui-bold", weight: "var(--font-weight-ui-bold)", label: "700" },
+          ].map((token) => (
+            <div
+              key={token.name}
+              className="flex items-center justify-between rounded-lg border border-neutral-700 bg-neutral-900/60 px-4 py-3"
+            >
+              <span className="font-sans text-base text-white" style={{ fontWeight: token.weight }}>
+                Northline Dashboard
+              </span>
+              <div className="flex flex-col items-end gap-0.5">
+                <code className="text-[10px] text-neutral-400">{token.name}</code>
+                <span className="text-[10px] text-neutral-500">{token.label}</span>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <h3 className="mt-6 text-sm font-semibold uppercase tracking-wide text-neutral-400">행간</h3>
+        <div className="flex flex-col gap-3">
+          {[
+            { name: "leading-ui-tight", leading: "var(--leading-ui-tight)", value: "1.25" },
+            { name: "leading-ui-normal", leading: "var(--leading-ui-normal)", value: "1.5" },
+            { name: "leading-ui-relaxed", leading: "var(--leading-ui-relaxed)", value: "1.625" },
+          ].map((token) => (
+            <div
+              key={token.name}
+              className="rounded-lg border border-neutral-700 bg-neutral-900/60 p-4"
+            >
+              <div className="mb-2 flex items-center justify-between gap-2">
+                <code className="text-[10px] text-neutral-400">{token.name}</code>
+                <span className="text-[10px] text-neutral-500">{token.value}</span>
+              </div>
+              <p
+                className="max-w-md font-sans text-sm text-neutral-200"
+                style={{ lineHeight: token.leading }}
+              >
+                워크플로 실행 로그와 커넥터 상태를 한 화면에서 확인합니다. 행간 토큰은 본문·설명·테이블 셀의
+                가독성을 맞출 때 사용합니다.
+              </p>
             </div>
           ))}
         </div>

@@ -2,20 +2,40 @@
 @import "tailwindcss";
 
 @theme {
-  /* Brand palette — violet (raw values; change only here for rebrand) */
+  /*
+   * Core palette — 3 locked decisions (rebrand: change only these)
+   * primary     → CTA, focus, active nav
+   * muted       → secondary text, placeholders, meta
+   * destructive → errors, delete, critical alerts
+   */
+  --color-core-primary: #7c3aed;
+  --color-core-muted: #6b6780;
+  --color-core-destructive: #ef4444;
+
+  /*
+   * Core spacing — 4px grid rhythm (use before arbitrary values)
+   * xs 4px · sm 8px · md 12px · lg 16px · xl 24px
+   */
+  --spacing-core-xs: 0.25rem;
+  --spacing-core-sm: 0.5rem;
+  --spacing-core-md: 0.75rem;
+  --spacing-core-lg: 1rem;
+  --spacing-core-xl: 1.5rem;
+
+  /* Brand palette — violet (derived from core-primary) */
   --color-brand-50: #f5f3ff;
   --color-brand-100: #ede9fe;
   --color-brand-200: #ddd6fe;
   --color-brand-300: #c4b5fd;
   --color-brand-400: #a78bfa;
   --color-brand-500: #8b5cf6;
-  --color-brand-600: #7c3aed;
+  --color-brand-600: var(--color-core-primary);
   --color-brand-700: #6d28d9;
   --color-brand-800: #5b21b6;
   --color-brand-900: #4c1d95;
 
   /* Feedback palette */
-  --color-danger-500: #ef4444;
+  --color-danger-500: var(--color-core-destructive);
   --color-success-500: #22c55e;
   --color-warning-500: #f59e0b;
 
@@ -25,7 +45,7 @@
   --color-red-1000: var(--color-danger-500);
 
   /* Semantic — brand & feedback */
-  --color-semantic-brand: var(--color-brand-600);
+  --color-semantic-brand: var(--color-core-primary);
   --color-semantic-danger: var(--color-danger-500);
   --color-semantic-warning: var(--color-warning-500);
   --color-semantic-success: var(--color-success-500);
@@ -40,7 +60,7 @@
   /* Semantic — text */
   --color-text-primary: #fafafa;
   --color-text-secondary: #a8a3b8;
-  --color-text-muted: #6b6780;
+  --color-text-muted: var(--color-core-muted);
   --color-text-on-brand: #ffffff;
 
   /* Semantic — border */
@@ -57,9 +77,9 @@
   --shadow-ui-sm: 0 1px 2px 0 rgb(0 0 0 / 0.25);
   --shadow-ui-md: 0 4px 6px -1px rgb(0 0 0 / 0.35);
 
-  /* Spacing — named stacks */
+  /* Spacing — named stacks (core rhythm aliases) */
   --spacing-ui-section: 2.5rem;
-  --spacing-ui-stack: 1rem;
+  --spacing-ui-stack: var(--spacing-core-lg);
 
   /* Typography scale (UI kit) */
   --text-ui-xs: 0.75rem;
@@ -90,14 +110,14 @@
   --font-sans: var(--font-ui-sans);
   --font-mono: var(--font-ui-mono);
 
-  /* Spacing scale — 4px grid (named for UI composition) */
+  /* Spacing scale — 4px grid (full scale; prefer spacing-core-* for new UI) */
   --spacing-ui-0: 0;
-  --spacing-ui-1: 0.25rem;
-  --spacing-ui-2: 0.5rem;
-  --spacing-ui-3: 0.75rem;
-  --spacing-ui-4: 1rem;
+  --spacing-ui-1: var(--spacing-core-xs);
+  --spacing-ui-2: var(--spacing-core-sm);
+  --spacing-ui-3: var(--spacing-core-md);
+  --spacing-ui-4: var(--spacing-core-lg);
   --spacing-ui-5: 1.25rem;
-  --spacing-ui-6: 1.5rem;
+  --spacing-ui-6: var(--spacing-core-xl);
   --spacing-ui-8: 2rem;
   --spacing-ui-10: 2.5rem;
   --spacing-ui-12: 3rem;
@@ -127,7 +147,9 @@
 /* Optional light theme: set class "light" or data-theme="light" on a root ancestor */
 .light,
 [data-theme="light"] {
-  --color-semantic-brand: var(--color-brand-600);
+  --color-core-muted: #9490a8;
+
+  --color-semantic-brand: var(--color-core-primary);
   --color-semantic-info: var(--color-brand-500);
 
   --color-surface-canvas: #f8f7ff;
@@ -137,7 +159,7 @@
 
   --color-text-primary: #1e1b2e;
   --color-text-secondary: #5b5675;
-  --color-text-muted: #9490a8;
+  --color-text-muted: var(--color-core-muted);
   --color-text-on-brand: #ffffff;
 
   --color-border-default: #ddd6fe;

@@ -13,6 +13,105 @@ export default function FoundationsPage() {
         컴포넌트는 시맨틱 역할을 소비해 제품 화면의 일관성을 유지합니다.
       </p>
 
+      <section className="mt-10 space-y-4 rounded-lg border border-brand-600/40 bg-brand-900/20 p-5">
+        <h2 className="text-xl font-semibold text-white">확정 코어 토큰</h2>
+        <p className="text-sm text-neutral-300">
+          리브랜딩 시 아래 <strong className="text-white">색 3개</strong>와{" "}
+          <strong className="text-white">간격 5단계</strong>만 바꾸면 시맨틱·컴포넌트가 따라옵니다.
+          정의 위치:{" "}
+          <code className="rounded bg-neutral-900 px-1">shared-styles.css</code> 상단{" "}
+          <code className="rounded bg-neutral-900 px-1">core-*</code> 블록.
+        </p>
+
+        <h3 className="text-sm font-semibold uppercase tracking-wide text-neutral-400">색 3개</h3>
+        <div className="grid gap-4 sm:grid-cols-3">
+          {[
+            {
+              name: "core-primary",
+              maps: "semantic-brand",
+              hex: "#7c3aed",
+              color: "var(--color-core-primary)",
+              use: "CTA, 포커스, 활성 탭",
+            },
+            {
+              name: "core-muted",
+              maps: "text-muted",
+              hex: "다크 #6b6780",
+              color: "var(--color-core-muted)",
+              use: "보조 텍스트, placeholder, 메타",
+            },
+            {
+              name: "core-destructive",
+              maps: "semantic-danger",
+              hex: "#ef4444",
+              color: "var(--color-core-destructive)",
+              use: "오류, 삭제, 위험 알림",
+            },
+          ].map((token) => (
+            <div
+              key={token.name}
+              className="flex flex-col gap-3 rounded-lg border border-neutral-700 bg-neutral-900/60 p-4"
+            >
+              <div className="h-14 w-full rounded-md border border-neutral-600" style={{ backgroundColor: token.color }} />
+              <div>
+                <code className="text-xs text-white">{token.name}</code>
+                <p className="mt-1 text-[10px] text-neutral-500">
+                  → <code>{token.maps}</code>
+                </p>
+                <p className="mt-1 text-xs text-neutral-400">{token.use}</p>
+                <p className="mt-1 font-mono text-[10px] text-neutral-500">{token.hex}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <h3 className="text-sm font-semibold uppercase tracking-wide text-neutral-400">간격 (4px 그리드)</h3>
+        <div className="overflow-x-auto rounded-lg border border-neutral-800 bg-neutral-900/40 p-4">
+          <table className="w-full min-w-[28rem] text-left text-sm">
+            <thead>
+              <tr className="border-b border-neutral-700 text-xs text-neutral-500">
+                <th className="pb-2 pr-4 font-medium">코어</th>
+                <th className="pb-2 pr-4 font-medium">px</th>
+                <th className="pb-2 pr-4 font-medium">ui 스케일</th>
+                <th className="pb-2 font-medium">용도</th>
+              </tr>
+            </thead>
+            <tbody className="text-neutral-300">
+              {[
+                { core: "spacing-core-xs", px: 4, ui: "spacing-ui-1", use: "아이콘·라벨 간격" },
+                { core: "spacing-core-sm", px: 8, ui: "spacing-ui-2", use: "칩, 툴바 gap" },
+                { core: "spacing-core-md", px: 12, ui: "spacing-ui-3", use: "필드 라벨–입력" },
+                { core: "spacing-core-lg", px: 16, ui: "spacing-ui-4 / stack", use: "세로 스택 기본" },
+                { core: "spacing-core-xl", px: 24, ui: "spacing-ui-6", use: "카드 블록 패딩" },
+              ].map((row) => (
+                <tr key={row.core} className="border-b border-neutral-800/80 last:border-0">
+                  <td className="py-2.5 pr-4">
+                    <code className="text-xs text-neutral-400">{row.core}</code>
+                  </td>
+                  <td className="py-2.5 pr-4">
+                    <div className="flex items-center gap-2">
+                      <div
+                        className="h-3 shrink-0 rounded-sm bg-semantic-brand/70"
+                        style={{ width: `${row.px}px` }}
+                      />
+                      <span className="text-xs text-neutral-500">{row.px}px</span>
+                    </div>
+                  </td>
+                  <td className="py-2.5 pr-4">
+                    <code className="text-xs text-neutral-500">{row.ui}</code>
+                  </td>
+                  <td className="py-2.5 text-xs text-neutral-400">{row.use}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <p className="mt-3 text-xs text-neutral-500">
+            섹션 간 여백은 <code className="rounded bg-neutral-800 px-1">spacing-ui-section</code> (40px)을
+            사용합니다.
+          </p>
+        </div>
+      </section>
+
       <section className="mt-10 space-y-3">
         <h2 className="text-xl font-semibold text-white">토큰이 있는 위치</h2>
         <ul className="list-disc space-y-2 pl-6 text-sm text-neutral-300">
@@ -161,7 +260,7 @@ export default function FoundationsPage() {
           {[0, 1, 2, 3, 4, 5, 6, 8, 10, 12, 16].map((n) => (
             <div key={n} className="flex items-center gap-3">
               <code className="w-20 text-right text-xs text-neutral-400">ui-{n}</code>
-              <div className="h-3 rounded-sm bg-blue-1000/60" style={{ width: `${n * 4}px` }} />
+              <div className="h-3 rounded-sm bg-semantic-brand/60" style={{ width: `${n * 4}px` }} />
               <span className="text-xs text-neutral-500">{n * 4}px</span>
             </div>
           ))}

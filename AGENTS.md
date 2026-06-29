@@ -6,11 +6,11 @@
 
 공유 React UI 라이브러리(`@repo/ui`)와 세 개의 소비 앱(`web` — Next.js, 포트 3001 / `docs` — Next.js, 포트 3000 / `storybook` — Storybook, 포트 6006)으로 구성된 Turborepo 모노레포(pnpm workspaces)입니다. 프론트엔드 전용이며 데이터베이스, 백엔드 API, Docker 서비스는 없습니다.
 
-최근 모듈 초점: iPaaS 친화 UI 프리미티브와 페이지(`/console/integrations`, `/console/workflows`, `/console/runs`, `/console/runs/[id]`)가 mock 데이터 또는 선택적 API 연동을 기반으로 한 프론트엔드 데모로 제공됩니다.
+최근 모듈 초점: 통합·워크플로 UI 프리미티브와 페이지(`/console/integrations`, `/console/workflows`, `/console/runs`, `/console/runs/[id]`)가 mock 데이터 또는 선택적 API 연동을 기반으로 한 프론트엔드 데모로 제공됩니다.
 
 ### 디자인 가이드
 
-UI 토큰, 레이아웃 레시피, iPaaS 콘솔 패턴은 저장소 루트의 [design.md](design.md)에 정리되어 있습니다. `@repo/ui`나 콘솔 페이지를 수정하기 전에 디자인 일관성을 위해 여기서부터 확인하세요. 라이브 예시와 권장/비권장은 docs 앱(`/docs/foundations`, `/docs/design-system`, `/docs/patterns`, `/docs/components`)과 Storybook(포트 6006)에서 확인할 수 있습니다.
+UI 토큰, 레이아웃 레시피, 콘솔 패턴은 저장소 루트의 [design.md](design.md)에 정리되어 있습니다. `@repo/ui`나 콘솔 페이지를 수정하기 전에 디자인 일관성을 위해 여기서부터 확인하세요. 라이브 예시와 권장/비권장은 docs 앱(`/docs/foundations`, `/docs/design-system`, `/docs/patterns`, `/docs/components`)과 Storybook(포트 6006)에서 확인할 수 있습니다.
 
 ### 주요 명령
 

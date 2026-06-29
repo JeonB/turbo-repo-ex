@@ -15,7 +15,7 @@
 ### 패키지
 
 - **@repo/ui** — 공유 React 컴포넌트와 스타일(Tailwind, `ui:` 접두사). web·docs에서 사용.
-- **@repo/ui iPaaS 모듈** — `ConnectorCard`, `RunStatusBadge`, `StepLogPanel`, `FlowCanvas`, `WorkflowEditor`로 통합/워크플로/실행 로그 UI를 조합. 웹 콘솔 `/console/workflows`에서 노드형 자동화 편집(localStorage) 및 테스트 실행을 지원합니다.
+- **@repo/ui 워크플로 모듈** — `ConnectorCard`, `RunStatusBadge`, `StepLogPanel`, `FlowCanvas`, `WorkflowEditor`로 통합/워크플로/실행 로그 UI를 조합. 웹 콘솔 `/console/workflows`에서 노드형 자동화 편집(localStorage) 및 테스트 실행을 지원합니다.
 - **@repo/api-client** — `createConsoleApiClient` 기반의 타입 안전 API 클라이언트(Zod 스키마 파싱, 타임아웃/재시도/요청 ID 지원).
 - **@repo/tailwind-config** — 공유 Tailwind 테마(시맨틱 토큰 + 팔레트).
 - **@repo/typescript-config** — 공유 `tsconfig` 프리셋.

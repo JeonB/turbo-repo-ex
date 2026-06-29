@@ -246,9 +246,9 @@ export default function ComponentReferencePage() {
       </section>
 
       <section className="mt-10">
-        <h3 className="text-xl font-semibold text-white">iPaaS 모듈 (ConnectorCard / RunStatusBadge / StepLogPanel / FlowCanvas / WorkflowEditor)</h3>
+        <h3 className="text-xl font-semibold text-white">워크플로 모듈 (ConnectorCard / RunStatusBadge / StepLogPanel / FlowCanvas / WorkflowEditor)</h3>
         <p className="mt-2 text-sm text-neutral-400">
-          <strong>용도:</strong> 통합 연결 상태, 워크플로 실행 상태, 스텝 로그, DAG 캔버스를 조합해 iPaaS 콘솔 화면을 빠르게 구성합니다.
+          <strong>용도:</strong> 통합 연결 상태, 워크플로 실행 상태, 스텝 로그, DAG 캔버스를 조합해 콘솔 화면을 빠르게 구성합니다.
           <strong> WorkflowEditor</strong>는 n8n 스타일 노드 팔레트·커스텀 노드(트리거, DB 조회, HTTP 응답, Transform, Slack, 이메일)로 편집 캔버스를 제공합니다. web 콘솔의{" "}
           <code className="rounded bg-neutral-800 px-1">/console/workflows/[id]</code>에서 localStorage에 정의를 저장하고 테스트 실행할 수 있습니다.
           <strong> 접근성:</strong> 상태 텍스트는 배지로 노출되고, 캔버스는 읽기 전용 <code className="rounded bg-neutral-800 px-1">aria-label</code>을 제공합니다.

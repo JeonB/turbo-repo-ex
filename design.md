@@ -1,6 +1,6 @@
 # Design Guide
 
-B2B SaaS·iPaaS 콘솔 화면을 위한 **saas-interface-kit** 디자인 방향성과 반복 패턴 정리 문서입니다.
+B2B SaaS 콘솔 화면을 위한 **saas-interface-kit** 디자인 방향성과 반복 패턴 정리 문서입니다.
 토큰의 단일 출처는 `packages/tailwind-config/shared-styles.css`이며, 컴포넌트 구현은 `@repo/ui` 패키지를 따릅니다.
 
 상세한 라이브 예시·Do/Don't는 docs 앱(`http://localhost:3000`)과 Storybook(`http://localhost:6006`)을 함께 참고하세요.
@@ -19,7 +19,7 @@ B2B SaaS·iPaaS 콘솔 화면을 위한 **saas-interface-kit** 디자인 방향�
 ### 목표
 
 - **B2B SaaS 대시보드** — 데이터 밀도가 높은 관리 화면, 설정, 알림, 감사 로그
-- **iPaaS 콘솔** — 통합(Connector), 워크플로 편집, 실행(Run) 모니터링
+- **통합·워크플로 콘솔** — 통합(Connector), 워크플로 편집, 실행(Run) 모니터링
 - **다크 우선(dark-first)** — 기본 테마는 어두운 분석·운영 콘솔 톤; 라이트 모드는 opt-in
 - **토큰 기반 일관성** — 페이지마다 임의 색·간격을 쓰지 않고 시맨틱 토큰과 `@repo/ui` variant로 의미를 표현
 
@@ -396,7 +396,7 @@ focus-visible:ui:ring-2 focus-visible:ui:ring-semantic-brand/40
 
 ---
 
-## 10. iPaaS / 콘솔 UI
+## 10. 콘솔 UI
 
 ### 도메인 컴포넌트 (`@repo/ui`)
 
